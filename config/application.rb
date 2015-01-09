@@ -8,6 +8,10 @@ Bundler.require(*Rails.groups)
 
 module PinBoard
   class Application < Rails::Application
+
+    #------------ This is to help get paperclip to work. added after was getting error. via web search.  ----------Kenny Trionfo---1/8/2015--------
+    Paperclip.options[:command_path] = "/usr/local/bin/identify"
+    
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
