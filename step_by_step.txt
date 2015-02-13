@@ -1,0 +1,351 @@
+
+------------ build Pinboard site ----------Kenny Trionfo---12/24/2014--------
+Create a new rails app called pin_board that uses postgres db and skips installing test::unit. 
+	In console: 
+	rails new pin_board -d postgresql --skip-test-unit
+
+Make sure file works in browswer: 
+	cd pin_board
+	rails s
+	In browswer: 
+	localhost:3000
+	Should see rails message. 
+
+Check Versions etc: 
+	ruby -v
+	rails -v
+	gemset
+	etc
+
+Install Gems
+	In Gemfile:
+	gem 'haml', '~> 4.0.6' to gemfile #Don't need this if not going to use haml dsl in the app.
+	gem 'bootstrap-sass', '~> 3.2.0.2'
+	gem 'simple_form', '~> 3.0.2'
+	bundle 
+
+Create a Pin model with a title that's a string and a description that's text: 
+	In console: 
+	rails g model Pin title:string description:text 	
+
+Move the model over to the db: 
+	In console: 
+	rake db:migrate
+
+Create a Pins controller: 
+	In console: 
+	rails g controller Pins 
+
+Create an index action 
+	In pins_controller.rb:
+	def index
+	end
+
+Put all the resources in the routes file as well as make the root path point to the index action in pins controller: 
+	-in routes.rb 
+	resources :pins
+	root 'pins#index'
+
+Create a new file for the index view: 
+	In app/views/pin create new file called:
+	index.html.erb
+
+Create the new and create CRUD actions in pins_controller.rb 
+	Start wtih this: 
+	def new
+		@pin = Pin.new
+	end
+
+	def create
+		@pin = Pin.new(pin_params)
+	end
+
+
+	private
+
+	def pin_params
+		params.require(:pin).permit(:title, :description)
+	end
+
+Create a view for creating a new pin: 
+	In app/views/pin: 
+	new.html.erb
+
+Add code in new view for a form to creat a new pin: 
+	In the new.html.erb file: 
+	<h1>New Form</h1>
+	<%= render 'form' %>
+	<%= link_to "Back", root_path %>
+
+Create a form partial: 
+	In view/pin create the form partial _form.html.erb
+	-read documentation on simple_form
+	rails g simple_form:install --bootstrap  
+	-in the form partial: 
+	= simple_form_for @pin, html: {multipart: true} do |f|
+		- if @pin.errors.any? 
+			errors
+			%h2
+			= pluralize(@pin.errors.count, "error")
+			prevented this Pin from saving
+			%ul
+			- @pin.errors.full_messages.each do |msg|
+				%li = msg
+
+		.form-group
+			= f.input :title, input_html: { class: 'form-control'}
+
+		.form-group
+			= f.input :description, input_html: { class: 'form-control'}
+
+		= f.button :submit, class: "btn btn-primary"
+	-add to crate method: 
+			if @pin.save 
+				redirect_to @pin, notice: "Successfully created new Pin" 
+			else 
+				render 'new'
+			end
+	-in view/layouts, change application.html.erb to .haml
+	and above existing code add: 
+	!!! 5
+	%html
+	%head
+		%title Pin Board
+		= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+		= javascript_include_tag 'application', 'data-turbolinks-track' => tru
+		= csrf_meta_tags
+	%body
+		= yield
+	-then delete the existing 
+	-change the language setting in bottom right of sublime to ruby haml
+	- under %body and above = yield add flash message in application.html.haml file: 
+		- flash.each do |name, msg|
+			= content_tag :div, msg, class: "alert alert-info"  this is bootstrap
+	refresh and get unknow action errror
+	-create a private method called find_pin for a few of the crud actions in pins_controller: 
+		def find_pin
+			@pin = Pin.find(params[:id])
+		end
+	-Then at top add following before action: 
+		before_action :find_pin, only: [:show, :edit, :update, :destroy]
+	-Create a view for the show action with a new view file in views/pin: 
+	show.html.haml
+	-Add following to file and refresh: 
+	%h1= @pin.title
+	%p= @pin.description
+	-also add: 
+	= link_to "Back", root_path
+	-add update and destroy actions/methods to pin controller: 
+			def update
+				if @pin.update(pin_params)
+					redirect_to @pin, notice: "Pin was Successfully updated"
+				else
+					render 'edit'
+				end
+			end
+
+			def destroy
+
+			end
+	-create a new file for the edit page called: edit.html.haml in views/pin:
+	-and add: 
+	%h1 Edit Pin
+	= render 'form'
+
+	= link_to "Cancel", pin
+	-on show page add link_to form like this: 
+	= link_to "Edit", edit_pin_path
+	-add code in the destroy action to delete a pin & redirect to main index page: 
+			@pin.destroy
+			redirect_to root_path
+	-add delete button on show page: 
+	= link_to "Delete", pin_path, method: :delete, data: {confirm: "Are you sure?"}
+	-add a "new" button on the index page: 
+	= link_to "New Pin", new_pin_path
+	-add devise gem: 
+	gem 'devise', '~> 3.4.1'
+	-follow devise documentation instructions online: 
+	rails g devise:install
+	1. in development.rb file: 
+	config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+	2. & 3. are done 
+	5. run: 
+	rails g devise:view
+	rails g devise User
+	rake db:migrate
+	restart server
+	try localhost:3000/users/sign_up
+	-Make sure that each pin will be assigned to a user. 
+	Create associations in models pin.rb and user.rb 
+	has_many & belongs_to
+	-Generate a migration so that the pin table has a user_id column: 
+	rails g migration add_user_id_to_pins user_id:integer:index
+	-check migration
+	rake db:migrate
+	-Connect our existing pins to a user by going into rails c and doing something like:
+	@pin = Pin.first
+	@user = User.first 
+	@pin = @user
+	@pin.save 
+	-Then check it by adding code to display the user's email to each pin. in show.html.haml file: 
+	%p
+	Submitted by
+	= @pin.user.email
+
+	%br/
+	-refresh and see. 
+	-In pins_controller, change the @pin.new in both the new and the create actions to: 
+	current_user.pins.build
+
+	----------------Start bootstrap stuff here: 
+
+	-Follow online documentation and Configure bootstrap:
+	-Add .scss to app/assests/stylesheets/application.css  
+	-Add this to the file: 
+	@import "bootstrap-sprockets";
+	@import "bootstrap"; 
+	-refresh to see new styling 
+	-Add this to the application.js file: 
+	//= require bootstrap-sprockets
+	-add navigation to application.html.haml file. Below body tag and tabbed once: 
+	%nav.navbar.navbar-default
+			.container
+				.navbar-brand= link_to "Pin Board", root_path
+
+				- if user_signed_in?
+					%ul.nav.navbar-nav.navbar-right
+						%li= link_to "New Pin", new_pin_path
+						%li= link_to "Account", edit_user_registration_path
+						%li= link_to "Sign Out", destroy_user_session_path, method: :delete
+				- else
+					%ul.nav.navbar-nav.navbar-right
+						%li= link_to "Sign Up", new_user_registration_path
+						%li= link_to "Sign In", new_user_session_path
+	-Add .container above the flash message, one tab in and lined with the first nav.bar above.  
+	-Add a wrapper around the new pin form. In new.html.haml, add:
+	.col-md-6.col-md-offset-3
+	at top and tab in rest one tab. 
+	-Do same thing to edit page.
+	-----ADD THE ABILITY TO UPLOAD IMAGES.
+	-Add paperclip gem:
+	gem 'paperclip', '~> 4.2.0'
+	-bundle install and restart server
+	-read paperclip documentation
+	-install imagemagic
+	- in quickstart section, add the has_attached_file and validates_attachment_content_type to the pin: 
+	-add following to pin.rb (this is copied from paperclip gem but changed for our needs):
+	has_attached_file :image, styles: { :medium => "300x300>" }
+	  	validates_attachment_content_type :image, :content_type => /\Aimage\/.*\Z/
+	  	-run the migration that it tells you to in gem: 
+		rails g paperclip pin image
+	-add paperclip to form also. under views/pin/_form.html.haml:
+		.form-group
+			= f.input :image, input_html: { class: 'form-control'}	
+	above the other ones. 
+	rake db:migrate
+	in pins controller add: 
+	:image
+	to the pin_params behind :description
+	-add this to top of show.html.haml: 
+	= image_tag @pin.image.url(:medium)
+	-change index view to this: 
+	- @pins.each do |pin|
+		= link_to (image_tag pin.image.url(:medium)), pin
+		%h2= link_to pin.title, pin
+	-Show the user which image they are editing when they are editing it. 
+		-In edit.html.haml, above = render 'form' add: 
+	   	= image_tag @pin.image.url(:medium)
+	 -Put the jquery masonry in place to auto stack things upon resizing screen: 
+	in gemfile, put 
+	gem 'masonry-rails', '~> 0.2.1'
+	and bundle
+	in documentation: add line from the JavaScript section in JS file under jquery: 
+	//= require masonry/jquery.masonry
+	put this in pins.js.coffee:
+	->
+	$('pins').imagesLoaded ->
+	$('pins').masonry
+	 itemsSelector: '.box'
+	 isFitWidth: true
+	-enable transitions in index: 
+	-should end up like this: 
+	pins.transitions-enabled
+	- @pins.each do |pin|
+		.box.panel.panel-default
+			= link_to (image_tag pin.image.url(:medium)), pin
+			.panel-body	 
+				%h2= link_to pin.title, pin
+
+	-add: 
+	*= require 'masonry/transitions'
+	to application.css.scss file above require tree 
+
+	-style up the show page with various. should look like this:
+	pin_show.row
+		.col-md-8.col-md-offset-2
+			.panel.panel-default
+				.panel-heading.pin_image
+					= image_tag @pin.image.url
+				.panel-body
+					%h1= @pin.title
+					%p.description= @pin.description
+					%p
+					Submitted by
+					= @pin.user.email
+				.panel-footer
+					.row
+						.col-md-6
+							%p.user
+							Submitted by
+							= @pin.user.email
+						.col-md-6
+							.btn-group.pull-right
+								= link_to "Edit", edit_pin_path, class: "btn btn-default"
+								= link_to "Delete", pin_path, method: :delete, data: {confirm: "Are you sure?"}, class: "btn btn-default"
+	-Add teh ability to vote on a pin. insert acts-as-votable gem: 
+	gem 'acts_as_votable', '~> 0.10.0'
+	bundle install & restart server
+	in documentation, do a migration. In console: 
+	rake db:migrate
+	Inside of pin model add 
+	acts_as_votable
+	at top. 
+	Create some nested routes: 
+	In routes file, below devise_for, replace resouces :pins with: 
+	resources :pins do
+		member do
+			put "Like", to: "pinsupvote"
+		end
+	end
+	Then in pins_controller, add:
+	:upvote 
+	to the params in brackets of the before_action at the top and add: 
+	def upvote
+		@pin.upvote_by current_user
+		redirect_to :back
+	end
+	below the destroy block.
+	In show page add a link_to under the last btn-group.. like so: 
+	.btn-group.pull-right
+		= link_to like_pin_path(@pin), method: :put, class: "btn btn-default" do 
+			%span.glyphicon.glyphicon-heart
+				=@pin.get_upvotes.size
+	Add right below this: 
+	- if user_signed_in?
+	Add authenticate so users who aren't signed in can't do anything. below the first before_action in the pins_controller, add: 
+	before_action :authenticate_user!, except: [:index, :show]
+	test in an in congnito window and should see that you can't do stuff. 
+	Now, pretty up the forms a bit. 
+	Add this to the new form so it looks like this: 
+	.col-md-6.col-md-offset-3
+	.row
+		.panel.panel-default
+			.panel-heading
+				%h1 New Form
+			.panel-body
+				= render 'form'
+	Now pretty  up edit form for editing one's account. under views/devise/registration/edit.html.erb, 
+	Kept the file in erb and add some things. (This was a lot of editing. I just copy code from hit github and pasted to make it work.)
+	Also copied the code for the edit a pin page, sign up and sign in pages. 
+
+
