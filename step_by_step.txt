@@ -86,52 +86,51 @@ Create a form partial:
 	rails g simple_form:install --bootstrap  
 	In the form partial: 
 	<%= simple_form_for @pin, html: {multipart: true} do |f| %>
-  		<% if @pin.errors.any?  %>
-    errors
-    <h2></h2>
-    <%= pluralize(@pin.errors.count, "error") %>
-    prevented this Pin from saving
-    <ul></ul>
-    <% @pin.errors.full_messages.each do |msg| %>
-      <li>
-        <%= msg %>
-      </li>
+	  <% if @pin.errors.any?  %>
+	    <div id="errors"></div>
+	    <h2></h2>
+	    <%= pluralize(@pin.errors.count, "error") %>
+	    prevented this Pin from saving
+	    <ul></ul>
+	    <% @pin.errors.full_messages.each do |msg| %>
+	      <li>
+	        <%= msg %>
+	      </li>
+	    <% end %>
+	  <% end %>
+	  <div class="form-group">
+	    <%= f.input :image, input_html: { class: 'form-control'} %>
+	  </div>
+	  <div class="form-group">
+	    <%= f.input :title, input_html: { class: 'form-control'} %>
+	  </div>
+	  <div class="form-group">
+	    <%= f.input :description, input_html: { class: 'form-control'} %>
+	  </div>
+	  <%= f.button :submit, class: "btn btn-primary" %>
+	<% end %>
+
+
+Add a flash message for when a new pin is created: 
+	In view/layouts, 
+	In the <body> tag and above the <%=yield: 
+	<% flash.each do |name, msg| %>
+      <%= content_tag :div, msg, class: "alert alert-info"  %> <!-- this is bootstrap -->
     <% end %>
-  <% end %>
-  <div class="form-group">
-    <%= f.input :title, input_html: { class: 'form-control'} %>
-  </div>
-  <div class="form-group">
-    <%= f.input :description, input_html: { class: 'form-control'} %>
-  </div>
-  <%= f.button :submit, class: "btn btn-primary" %>
-<% end %>
+    Refresh and get unknow action error. url should have /pin/1 but we haven't defined a show action inside of our params. 
+	So in PinsController: 
+	def show
+	end
 
+	Because we'll have to do this for a few of our cruds, create a private method called find_pin for a few of the crud actions in pins_controller, under private, so:
+	private 
+	def find_pin
+		@pin = Pin.find(params[:id])
+	end
+	Then at top add following before action: 
+	before_action :find_pin, only: [:show, :edit, :update, :destroy]
 
-	-in view/layouts, change application.html.erb to .haml
-	and above existing code add: 
-	!!! 5
-	%html
-	%head
-		%title Pin Board
-		= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
-		= javascript_include_tag 'application', 'data-turbolinks-track' => tru
-		= csrf_meta_tags
-	%body
-		= yield
-	-then delete the existing 
-	-change the language setting in bottom right of sublime to ruby haml
-	- under %body and above = yield add flash message in application.html.haml file: 
-		- flash.each do |name, msg|
-			= content_tag :div, msg, class: "alert alert-info"  this is bootstrap
-	refresh and get unknow action errror
-	-create a private method called find_pin for a few of the crud actions in pins_controller: 
-		def find_pin
-			@pin = Pin.find(params[:id])
-		end
-	-Then at top add following before action: 
-		before_action :find_pin, only: [:show, :edit, :update, :destroy]
-	-Create a view for the show action with a new view file in views/pin: 
+Create a view for the show action with a new view file in views/pin: 
 	show.html.haml
 	-Add following to file and refresh: 
 	%h1= @pin.title
@@ -150,6 +149,7 @@ Create a form partial:
 			def destroy
 
 			end
+
 	-create a new file for the edit page called: edit.html.haml in views/pin:
 	-and add: 
 	%h1 Edit Pin
