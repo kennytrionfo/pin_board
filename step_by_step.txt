@@ -110,7 +110,6 @@ Create a form partial:
 	  <%= f.button :submit, class: "btn btn-primary" %>
 	<% end %>
 
-
 Add a flash message for when a new pin is created: 
 	In view/layouts, 
 	In the <body> tag and above the <%=yield: 
@@ -131,13 +130,26 @@ Add a flash message for when a new pin is created:
 	before_action :find_pin, only: [:show, :edit, :update, :destroy]
 
 Create a view for the show action with a new view file in views/pin: 
-	show.html.haml
-	-Add following to file and refresh: 
+	show.html.erb
+	Add following to file: 
 	%h1= @pin.title
 	%p= @pin.description
-	-also add: 
-	= link_to "Back", root_path
-	-add update and destroy actions/methods to pin controller: 
+	Refresh, should see flash message "successfully created new pint" as well as title and description. 
+
+Now also in this view, add a link back to the home page (root path): 
+	<%= link_to "Back", root_path %>
+	Refresh to see.
+
+List out all of the pins on the index page: 
+	<% @pins.each do |pin| %>
+      <h2>
+        <%= link_to pin.title, pin %>
+      </h2>
+  	<% end %>
+  	Refresh and see NoMethodError in Pins#index cuz it's not defined in the controller. 
+
+
+-add update and destroy actions/methods to pin controller: 
 			def update
 				if @pin.update(pin_params)
 					redirect_to @pin, notice: "Pin was Successfully updated"
