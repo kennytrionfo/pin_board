@@ -22,6 +22,9 @@ Install Gems
 	gem 'haml', '~> 4.0.6' to gemfile #Don't need this if not going to use haml dsl in the app.
 	gem 'bootstrap-sass', '~> 3.2.0.2'
 	gem 'simple_form', '~> 3.0.2'
+	? Better Errors?
+	? minitest-rails?
+	? debugger ? 
 	bundle 
 
 Create a Pin model with a title that's a string and a description that's text: 
@@ -79,32 +82,32 @@ Add code in new view for a form to creat a new pin:
 
 Create a form partial: 
 	In view/pin create the form partial _form.html.erb
-	-read documentation on simple_form
+	Read documentation on simple_form
 	rails g simple_form:install --bootstrap  
-	-in the form partial: 
-	= simple_form_for @pin, html: {multipart: true} do |f|
-		- if @pin.errors.any? 
-			errors
-			%h2
-			= pluralize(@pin.errors.count, "error")
-			prevented this Pin from saving
-			%ul
-			- @pin.errors.full_messages.each do |msg|
-				%li = msg
+	In the form partial: 
+	<%= simple_form_for @pin, html: {multipart: true} do |f| %>
+  		<% if @pin.errors.any?  %>
+    errors
+    <h2></h2>
+    <%= pluralize(@pin.errors.count, "error") %>
+    prevented this Pin from saving
+    <ul></ul>
+    <% @pin.errors.full_messages.each do |msg| %>
+      <li>
+        <%= msg %>
+      </li>
+    <% end %>
+  <% end %>
+  <div class="form-group">
+    <%= f.input :title, input_html: { class: 'form-control'} %>
+  </div>
+  <div class="form-group">
+    <%= f.input :description, input_html: { class: 'form-control'} %>
+  </div>
+  <%= f.button :submit, class: "btn btn-primary" %>
+<% end %>
 
-		.form-group
-			= f.input :title, input_html: { class: 'form-control'}
 
-		.form-group
-			= f.input :description, input_html: { class: 'form-control'}
-
-		= f.button :submit, class: "btn btn-primary"
-	-add to crate method: 
-			if @pin.save 
-				redirect_to @pin, notice: "Successfully created new Pin" 
-			else 
-				render 'new'
-			end
 	-in view/layouts, change application.html.erb to .haml
 	and above existing code add: 
 	!!! 5
