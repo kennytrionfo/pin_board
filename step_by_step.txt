@@ -1,5 +1,6 @@
 
 ------------ build Pinboard site ----------Kenny Trionfo---12/24/2014--------
+
 Create a new rails app called pin_board that uses postgres db and skips installing test::unit. 
 	In console: 
 	rails new pin_board -d postgresql --skip-test-unit
