@@ -15,6 +15,7 @@ Make sure file works in browswer:
 Check Versions etc: 
 	ruby -v
 	rails -v
+	rvm info
 	gemset
 	etc
 
@@ -169,7 +170,7 @@ Create a new file for the edit page and code for an edit form:
 	<h1>Edit Pin</h1>
 	<%= render 'form' %>
 	<%= link_to "Cancel", pin %>
-
+ 
 Add a link_to form on the show page like this: 
 	<%= link_to "Edit", edit_pin_path %>
 	<% add code in the destroy action to delete a pin & redirect to main index page:  %>
@@ -199,6 +200,10 @@ Add devise gem:
 	Restart server
 	try localhost:3000/users/sign_up
 
+Try a branch here?: 
+	With: 
+	git branch -b something...
+	
 Make sure that each pin will be assigned to a user. 
 	Create associations in models pin.rb and user.rb 
 	has_many & belongs_to
