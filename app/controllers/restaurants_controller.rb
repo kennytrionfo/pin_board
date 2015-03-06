@@ -3,6 +3,9 @@ class RestaurantsController < ApplicationController
 
   respond_to :html
 
+  def welcome
+  end
+  
   def index
     @restaurants = Restaurant.all
     respond_with(@restaurants)

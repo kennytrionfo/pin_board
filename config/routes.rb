@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  root 'restaurants#welcome'
+
   resources :restaurants
 
   devise_for :users
@@ -8,7 +10,6 @@ Rails.application.routes.draw do
     end
   end
 
-  root 'pins#index'
 
 end
 
