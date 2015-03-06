@@ -1,4 +1,28 @@
-<h1>Listing restaurants</h1>
+<h1>Kenny's Restaurants</h1>
+
+<% @restaurants.each do |restaurant| %>
+  <div class="index_row clearfix">
+    <h2 class="restaurant_title"><%= link_to restaurant.title, restaurant %></h2>
+    <p class="restaurant_sub_title"><%= restaurant.description %></p>
+  </div>
+<% end %>
+
+<div class="links">
+  <%= link_to "New Restaurant", new_restaurant_path %>
+</div>  
+
+
+<br>
+<br>
+<br>
+<br>
+
+<div></div>
+<b>
+</b>
+<b></b>
+<p>Below this is the old. </p>
+<p></p>
 
 <table>
   <thead>
