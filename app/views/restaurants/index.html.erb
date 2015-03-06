@@ -1,15 +1,24 @@
 <h1>Kenny's Restaurants</h1>
+<%= link_to 'Create New Restaurant', new_restaurant_path %>
+
+<div class="links">
+  <%= link_to "New Restaurant div", new_restaurant_path %>
+</div> 
 
 <% @restaurants.each do |restaurant| %>
   <div class="index_row clearfix">
     <h2 class="restaurant_title"><%= link_to restaurant.title, restaurant %></h2>
     <p class="restaurant_sub_title"><%= restaurant.description %></p>
+
+    <div class="todo_list_menu">
+      <%= link_to "Dishes", restaurant %>  &nbsp;   | &nbsp;  
+      <%= link_to "Details", restaurant %>  
+  </div >
+
   </div>
 <% end %>
 
-<div class="links">
-  <%= link_to "New Restaurant", new_restaurant_path %>
-</div>  
+ 
 
 
 <br>
@@ -52,4 +61,3 @@
 
 <br>
 
-<%= link_to 'New Restaurant', new_restaurant_path %>
