@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :restaurants
+
   devise_for :users
   resources :pins do
     member do

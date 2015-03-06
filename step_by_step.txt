@@ -29,6 +29,31 @@ Install Gems
 	? debugger ? 
 	bundle 
 
+
+Create a restaurants model: 
+	In console: 
+	rails g scaffold restaurant title:string description:text address:text comments:text
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Create a Pin model with a title that's a string and a description that's text: 
 	In console: 
 	rails g model Pin title:string description:text 	
