@@ -7,7 +7,7 @@
 
 <% @restaurants.each do |restaurant| %>
   <div class="index_row clearfix">
-    <h2 class="restaurant_title"><%= link_to restaurant.title, restaurant %></h2>
+    <h2 class="restaurant_title"><%=  restaurant.title %></h2>
     <p class="restaurant_sub_title"><%= restaurant.description %></p>
 
     <div class="todo_list_menu">

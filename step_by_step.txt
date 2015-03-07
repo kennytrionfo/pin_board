@@ -474,4 +474,12 @@ Now pretty up edit form for editing one's account:
 	Kept the file in erb and add some things. (This was a lot of editing. I just copy code from hit github and pasted to make it work.)
 	Also copied the code for the edit a pin page, sign up and sign in pages. 
 
-------End------
+------End of regular------
+
+
+---------
+these are things i've been patching. 
+I have to go back in here later and put these above in the order they need to be in to make this complete.  
+--------------------------
+
+Change the devise notices for sucessful login, logout etc to be custom. 
