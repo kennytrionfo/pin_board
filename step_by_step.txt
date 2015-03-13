@@ -1,5 +1,8 @@
-
 ------------ build Pinboard site ----------Kenny Trionfo---12/24/2014--------
+
+
+      LOG TIME  ! ! !  ! !
+
 
 Create a new rails app called pin_board that uses postgres db and skips installing test::unit. 
 	In console: 
@@ -483,3 +486,8 @@ I have to go back in here later and put these above in the order they need to be
 --------------------------
 
 Change the devise notices for sucessful login, logout etc to be custom. 
+
+
+      LOG TIME  ! ! !  ! !
+
+

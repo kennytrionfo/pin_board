@@ -1,12 +1,9 @@
 Rails.application.routes.draw do
   root 'restaurants#welcome'
 
-  resources :restaurants
-
   devise_for :users
-  resources :pins do
-    member do
-      put "Like", to: "pins#upvote"
+  resources :restaurants do
+    resources :pins do 
     end
   end
 
