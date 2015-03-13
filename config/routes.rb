@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   root 'restaurants#welcome'
 
-  devise_for :users
+  devise_for :users, :controllers => { registrations: 'registrations' }
+
   resources :restaurants do
     resources :pins do 
     end

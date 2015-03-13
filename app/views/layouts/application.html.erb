@@ -1,5 +1,5 @@
  <!DOCTYPE html>
-<html></html>
+<html>
 <head>
   <title>Yummy Yucky</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
@@ -35,14 +35,16 @@
       <% end %>
     </div>
   </nav>
+
   <div class="container">
     <% flash.each do |name, msg| %>
       <%= content_tag :div, msg, class: "alert alert-info"  %> <!-- this is bootstrap -->
     <% end %>
     <%= yield %>
   </div>
+  
 </body>
-
+</html>
 
 <!-- the above in haml 
 !!! 5

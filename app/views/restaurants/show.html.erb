@@ -20,5 +20,13 @@
   <%= @restaurant.comments %>
 </p>
 
+<div id="todo_items_wrapper">
+	<%= render @restaurant.pins %>
+	<div id="form">
+		<%= render "pins/form" %>
+	</div>
+</div>
+
 <%= link_to 'Edit', edit_restaurant_path(@restaurant) %> |
 <%= link_to 'Back', restaurants_path %>
+
