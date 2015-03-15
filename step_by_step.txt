@@ -42,21 +42,6 @@ Create a restaurants model:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Create a Pin model with a title that's a string and a description that's text: 
 	In console: 
 	rails g model Pin title:string description:text 	
@@ -147,7 +132,7 @@ Add a flash message for when a new pin is created:
       <%= content_tag :div, msg, class: "alert alert-info"  %> <!-- this is bootstrap -->
     <% end %>
     Refresh and get unknow action error. url should have /pin/1 but we haven't defined a show action inside of our params. 
-	So in PinsController: 
+	So in PinsController:  
 	def show
 	end
 
@@ -222,10 +207,10 @@ Add devise gem:
 	config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 	2. & 3. are done 
 	5. run: 
-	rails g devise:view
+	rails g devise:views
 	rails g devise User
 	rake db:migrate
-	Restart server
+	Restart server 
 	try localhost:3000/users/sign_up
 
 Try a branch here?: 
@@ -238,13 +223,14 @@ Make sure that each pin will be assigned to a user.
 	
 	Generate a migration so that the pin table has a user_id column: 
 	rails g migration add_user_id_to_pins user_id:integer:index
-	Check migration
+	Can see this in migration file
 	rake db:migrate
+	See changes in schema.rb file
 
 	(If you want)Connect our existing pins to a user by going into rails c and doing something like:
 	@pin = Pin.first
 	@user = User.first 
-	@pin = @user
+	@pin.user = @user
 	@pin.save 
 	
 Add code to display the user's email to each pin:
@@ -427,7 +413,7 @@ Add the ability to vote on a pin.
 	acts_as_votable
 	at top. 
 
-Create some nested routes: 
+Create some nested routes for upvoting: 
 	In routes file, below devise_for, replace resouces :pins with: 
 	resources :pins do
 		member do
