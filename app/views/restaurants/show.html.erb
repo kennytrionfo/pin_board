@@ -1,7 +1,7 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Title:</strong>
+  <strong>Restaurant:</strong>
   <%= @restaurant.title %>
 </p>
 
@@ -16,17 +16,66 @@
 </p>
 
 <p>
-  <strong>Additional Comments:</strong>
+  <strong>Comments:</strong>
   <%= @restaurant.comments %>
 </p>
 
+<br>
+
+<h4> This Restaurant's Dishes</h4>
+
+
+<div class="row" id="pin_show">
+  <div class="col-md-8" "col-md-offset-2">
+    <div class="panel panel-default">
+      <div class="panel-heading pin_image">
+        <%= image_tag @pin.image.url %>
+      </div>
+      <div class="panel-body">
+        <h1>
+          <%= @pin.title %>
+        </h1>
+        <p class="description">
+          <%= @pin.description %>
+        </p>
+        <p></p>
+   <!--      Submitted by
+        <%= @pin.user.email %> -->
+      </div>
+      <div class="panel-footer">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="user"></p>
+            Submitted by
+            <%= @pin.user.email %>
+          </div>
+          <div class="col-md-6">
+            <div class="btn-group pull-right">
+              <% if user_signed_in? %>
+                <%= link_to "Edit", edit_pin_path, class: "btn btn-default" %>
+                <%= link_to "Delete", pin_path, method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-default" %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div id="todo_items_wrapper">
 	<%= render @restaurant.pins %>
-	<div id="form">
-		<%= render "pins/form" %>
-	</div>
+</div>
+  
+<h3>Create a new Dish</h3>
+
+<div id="form">
+  <%= render "pins/form" %>
 </div>
 
 <%= link_to 'Edit', edit_restaurant_path(@restaurant) %> |
 <%= link_to 'Back', restaurants_path %>
+
+
 
